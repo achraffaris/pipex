@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:12:01 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/05 10:14:31 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/07 12:19:14 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,6 @@
 
 void	free_2d_array(char **arr);
 void	free_array(char *arr);
-void	free_args(t_args *a);
+void	free_cmdinfo(t_cmdinfo *ci);
 
 #endif

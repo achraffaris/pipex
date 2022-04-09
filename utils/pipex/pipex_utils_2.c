@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:20:30 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/05 10:20:37 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/07 15:30:59 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,38 @@ int	on_success(int id)
 	if (id == -1)
 		ft_exit(0);
 	return (id);
+}
+
+int	**allocate_fds(int npipes)
+{
+	int **fd;
+	int i;
+	
+	i = 0;
+	fd = malloc(sizeof(int *) * (npipes));
+	if (!fd)
+		ft_exit(0);
+	i = 0;
+	while (i < npipes)
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		pipe(fd[i]);
+		i++;
+	}
+	return (fd);
+}
+
+void	close_free_fds(int **fd, int npipes)
+{
+	int i;
+
+	i = 0;
+	while (i < npipes)
+	{
+		close(fd[i][0]);
+		close(fd[i][1]);
+		free(fd[i]);
+		i++;
+	}
+	free(fd);
 }

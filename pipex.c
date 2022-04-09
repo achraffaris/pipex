@@ -6,12 +6,12 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:28:49 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/05 10:29:25 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/08 10:13:20 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
+/*
 void	first_execution(t_var *v, int **fd, int infile)
 {
 	dup2(infile, 0);
@@ -56,6 +56,7 @@ void	normal_execution(t_args a, int **fd, int ac)
 			execve(ci.path, ci.cmds, a.env);
 		}
 		close_fds(fd, v.i);
+		free_cmdinfo(&ci);
 		v.i++;
 		v.pos++;
 	}
@@ -64,25 +65,22 @@ void	normal_execution(t_args a, int **fd, int ac)
 int	main(int ac, char **av, char **env)
 {
 	t_args	args;
-	t_var	v;
 	int		**fd;
-
-	fd = malloc(sizeof(int *) * (ac - 3));
-	v.i = 0;
-	while (v.i < ac - 3)
-	{
-		fd[v.i] = malloc(sizeof(int) * 2);
-		pipe(fd[v.i]);
-		v.i++;
-	}
+	int		i;
+	
+	i = 2;
+	fd = allocate_fds(ac - 4);
+	if (ac != 5)
+		return (0);
 	set_args(&args, av, env);
 	normal_execution(args, fd, ac);
-	v.i = 0;
-	wait(NULL);
-	while (v.i < ac - 3)
+	while (i < ac - 1)
 	{
-		close(fd[v.i][0]);
-		close(fd[v.i][1]);
-		v.i++;
+		wait(0);
+		i++;
 	}
+	close_free_fds(fd, ac - 4);
+	free_2d_array(args.env_paths);
+	system("leaks pipex");
 }
+*/

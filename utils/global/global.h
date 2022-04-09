@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:14:57 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/05 10:17:45 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/08 10:10:58 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <errno.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include <stdio.h>
+# include <string.h>
 
 typedef struct cmdinfo{
 	char	**cmds;
@@ -39,6 +41,9 @@ typedef struct var{
 	int		ncmd;
 	int		len;
 	int		pos;
+	int		infile;
+	int		outfile;
+	int		pre_arg;
 }	t_var;
 
 #endif

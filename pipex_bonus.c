@@ -6,24 +6,38 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:29:58 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/05 10:29:59 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/09 10:12:42 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-/*
-void    set_args(t_args *a, char **av, char **env)
+
+void    check_return(int re)
 {
-    a->av = av;
-    a->env = env;
-    a->env_paths = get_paths(env);
+    if (re == -1)
+        ft_exit(0);
 }
 
-void    set_cmdinfo(t_cmdinfo *ci, t_args a, int pos)
+void	first_execution(t_var *v, int **fd)
 {
-    ci->cmds = ft_split(a.av[pos], ' ');
-    ci->cmd = ft_strjoin(ci->cmds[0], "");
-    ci->path = get_path_or_none(a.env_paths, ci->cmd);
+	check_return(dup2(v->infile, 0));
+	check_return(dup2(fd[v->i][1], 1));
+	close(fd[v->i][0]);
+}
+
+void	last_execution(t_var *v, int **fd)
+{
+	close(fd[v->i - 1][1]);
+	dup2(fd[v->i - 1][0], 0);
+	dup2(v->outfile, 1);
+}
+
+void	mid_executions(t_var *v, int **fd)
+{
+	dup2(fd[v->i][1], 1);
+	close(fd[v->i][0]);
+	close(fd[v->i - 1][1]);
+	dup2(fd[v->i - 1][0], 0);
 }
 
 int is_here_doc(char *str)
@@ -42,133 +56,100 @@ int is_here_doc(char *str)
     return (1);
 }
 
-int on_success(int id)
+int    here_doc(t_args a)
 {
-    if (id == -1)
-    {
-        perror(0);
-        exit(0);
-    }
-    return (id);
-}
-
-void    first_execution(t_args a, var *v, int **fd, int in)
-{
-    dup2(in, 0);
-    dup2(fd[v->i][1], 1);
-    close(fd[v->i][0]);
-}
-
-void    last_execution(t_args a, var *v, int **fd, int ac)
-{
-    close(fd[v->i -1][1]);
-    dup2(fd[v->i-1][0], 0);
-    dup2(on_success(open(a.av[ac - 1], O_CREAT | O_TRUNC | O_RDWR, 0777)), 1);
-}
-
-void    mid_executions(t_args a, var *v, int **fd)
-{
-    dup2(fd[v->i][1], 1);
-    close(fd[v->i][0]);
-    close(fd[v->i - 1][1]);
-    dup2(fd[v->i - 1][0], 0);
-}
-
-void    close_fds(int **fd, int i)
-{
-    int j;
-
-    j = 0;
-    while (j <= i - 1)
-    {
-        close(fd[j][0]);
-        close(fd[j][1]);
-        j++;
-    }
-}
-
-void    normal_execution(t_args a, int **fd, int ac, int in)
-{
-    t_cmdinfo   ci;
-    var         v;
-
-    v.pos = 2;
-    v.i = 0;
-    while (v.pos < ac - 1)
-    {
-        set_cmdinfo(&ci, a, v.pos);
-        if (fork() == 0)
-        {
-            if (v.pos - 1 == 1)
-                first_execution(a, &v, fd, in);
-            else if (v.pos + 1 == ac - 1)
-                last_execution(a, &v, fd, ac);
-            else
-                mid_executions(a, &v, fd);
-            execve(ci.path, ci.cmds, a.env);
-        }
-        close_fds(fd, v.i);
-        v.i++;
-        v.pos++;
-    }
-}
-
-void    here_doc(t_args a, int **fd, int ac)
-{
-    int in;
     char *tmp;
-    int fdt[2];
-    int i;
+    int fd[2];
 
-    i = 0;
-    pipe(fdt);
+    pipe(fd);
     if (fork() == 0)
     {
         tmp = get_next_line(0);
-        while(strcmp(tmp, a.av[2]) && i++ < 5)
+        while(1)
         {
+            write(fd[1], tmp, get_length(tmp, 0));
+            if (strcmp(tmp, ft_strjoin(a.av[2], "\n")) == 0)
+                break ;
             tmp = get_next_line(0);
-            write(fdt[1], tmp, get_length(tmp, 0));
         }
-        close(fdt[0]);
+        close(fd[0]);
         exit(0);
     }
-    close(fdt[1]);
-    in = fdt[0];
-    
-    normal_execution(a, fd, ac, in);
+    wait(0);
+    close(fd[1]);
+    return (fd[0]);
 }
 
-int main(int ac, char **av, char **env)
+t_var    setup_variables(t_args a, int ac)
 {
-    t_args  args;
-    var     v;
-    int     **fd;
-    int     in;
-    fd = malloc(sizeof(int *) * (ac - 3));
-    v.i = 0; 
-    while (v.i < ac - 3)
+    t_var v;
+    
+    
+    if (is_here_doc(a.av[1]))
     {
-        fd[v.i] = malloc(sizeof(int) * 2);
-        pipe(fd[v.i]);
-        v.i++;
+        v.infile = here_doc(a);
+        v.outfile = on_success(open(a.av[ac - 1], O_CREAT | O_APPEND | O_RDWR, 0644));
+        v.pos = 3;
+        v.npipe = ac - 5;
+        v.ncmd = ac - 4;
+        v.pre_arg = 2;
     }
-    set_args(&args, av, env);
-    if (is_here_doc(av[1]))
-        here_doc(args, fd, ac);
     else
     {
-        in = open(av[1], O_RDONLY);
-        normal_execution(args, fd, ac, in);
+        v.infile = on_success(open(a.av[1], O_RDONLY));
+        v.outfile = on_success(open(a.av[ac - 1], O_CREAT | O_TRUNC | O_RDWR, 0644));
+        v.pos = 2;
+        v.npipe = ac - 4;
+        v.ncmd = ac - 3;
+        v.pre_arg = 1;
     }
-        
-    v.i = 0;
-    wait(NULL);
-    while (v.i < ac - 3)
-    {
-        close(fd[v.i][0]);
-        close(fd[v.i][1]);
-        v.i++;
-    }
+    return v;
 }
-*/
+
+void	normal_execution(t_args a, int **fd, int ac, t_var *v)
+{
+	t_cmdinfo	ci;
+    int         pos;
+
+    pos = v->pos;
+    v->i = 0;
+	while (pos < ac - 1)
+	{
+		set_cmdinfo(&ci, a, pos);
+		if (fork() == 0)
+		{
+			if (pos - 1 == v->pre_arg)
+				first_execution(v, fd);
+			else if (pos + 1 == ac - 1)
+				last_execution(v, fd);
+			else
+				mid_executions(v, fd);
+			execve(ci.path, ci.cmds, a.env);
+		}
+		close_fds(fd, v->i);
+		free_cmdinfo(&ci);
+		v->i++;
+		pos++;
+	}
+}
+
+int	main(int ac, char **av, char **env)
+{
+	t_args	args;
+	int		**fd;
+    t_var	v;
+	
+    fd = 0;
+    set_args(&args, av, env);
+    v = setup_variables(args, ac);
+	fd = allocate_fds(v.npipe);
+    normal_execution(args, fd, ac, &v);
+    v.pos = 2;
+    while (v.pos < ac - 1)
+    {
+        wait(0);
+        v.pos++;
+    }
+	close_free_fds(fd, v.npipe);
+	free_2d_array(args.env_paths);
+}

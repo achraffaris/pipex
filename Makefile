@@ -4,7 +4,7 @@ CC = gcc
 
 FLAGS = -Wall -Wextra -Werror
 
-SRC = pipex.c \
+SRC = pipex_bonus.c \
 	utils/free/free_utils.c \
 	utils/gnl/get_next_line_utils.c \
 	utils/gnl/get_next_line.c \
@@ -12,7 +12,6 @@ SRC = pipex.c \
 	utils/pipex/pipex_utils.c \
 	utils/string/split.c \
 	utils/string/string_utils_1.c \
-	utils/string/string_utils_2.c \
 
 OBJ = ${SRC:.c=.o}
 
