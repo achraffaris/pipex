@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:21:55 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/07 13:15:24 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/09 15:07:06 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ char	*get_path_or_none(char **paths, char *cmd)
 		}
 		v.i++;
 	}
-	
 	free_array(tmp);
 	return (NULL);
 }
@@ -79,7 +78,6 @@ void	set_cmdinfo(t_cmdinfo *ci, t_args a, int pos)
 	ci->cmds = ft_split(a.av[pos], ' ');
 	ci->cmd = ft_strjoin(ci->cmds[0], 0);
 	ci->path = get_path_or_none(a.env_paths, ci->cmd);
-	
 	if (!ci->path)
 		ft_exit("COMMAND NOT FOUND!");
 }

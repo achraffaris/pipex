@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:55:14 by afaris            #+#    #+#             */
-/*   Updated: 2022/02/23 12:05:32 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/09 15:22:17 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# define BUFFER_SIZE 11
 
 void	free_buffers(char **rest);
 int		get_length(char *str, char c);

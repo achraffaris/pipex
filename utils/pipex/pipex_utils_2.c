@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:20:30 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/07 15:30:59 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/09 15:13:18 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	on_success(int id)
 
 int	**allocate_fds(int npipes)
 {
-	int **fd;
-	int i;
-	
+	int	**fd;
+	int	i;
+
 	i = 0;
 	fd = malloc(sizeof(int *) * (npipes));
 	if (!fd)
@@ -62,7 +62,7 @@ int	**allocate_fds(int npipes)
 
 void	close_free_fds(int **fd, int npipes)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < npipes)

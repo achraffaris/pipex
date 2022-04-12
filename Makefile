@@ -2,9 +2,9 @@ NAME = pipex
 
 CC = gcc
 
-FLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
-SRC = pipex_bonus.c \
+SRC = pipex.c \
 	utils/free/free_utils.c \
 	utils/gnl/get_next_line_utils.c \
 	utils/gnl/get_next_line.c \
@@ -13,17 +13,32 @@ SRC = pipex_bonus.c \
 	utils/string/split.c \
 	utils/string/string_utils_1.c \
 
+BSRC = pipex_bonus.c \
+	utils/pipex/pipex_utils_bonus.c \
+	utils/free/free_utils.c \
+	utils/gnl/get_next_line_utils.c \
+	utils/gnl/get_next_line.c \
+	utils/pipex/pipex_utils_2.c \
+	utils/pipex/pipex_utils.c \
+	utils/string/split.c \
+	utils/string/string_utils_1.c \
+
+
 OBJ = ${SRC:.c=.o}
 
-all: $(NAME)
+BOBJ = ${BSRC:.c=.o}
 
-.c.o:
-	$(CC) $(FLAGS) -c $< -o $@ -D BUFFER_SIZE=42
+all: $(NAME)
 	
 $(NAME): $(OBJ)
 
+bonus: $(BOBJ)
+	$(CC) $(BOBJ) -o $(NAME)
+
+$(BNAME) : $(BOBJ)
+
 clean :
-	rm -f ${OBJ}
+	rm -f ${OBJ} $(BOBJ)
 
 fclean : clean
 	rm -f $(NAME) 

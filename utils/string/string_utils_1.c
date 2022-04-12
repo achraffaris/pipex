@@ -6,7 +6,7 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:24:33 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/07 12:38:28 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/09 15:16:02 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,26 @@ char	*ft_strjoin(char *s1, char *s2)
 		tmp[i++] = s2[j++];
 	tmp[i] = '\0';
 	return (tmp);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	size_t				i;
+	unsigned char		*str1;
+	unsigned char		*str2;
+
+	str1 = (unsigned char *)s1;
+	str2 = (unsigned char *)s2;
+	i = 0;
+	while (str1[i] || str2[i])
+	{
+		if (str1[i] != str2[i])
+		{
+			free(s2);
+			return (str1[i] - str2[i]);
+		}
+		i++;
+	}
+	free(s2);
+	return (0);
 }

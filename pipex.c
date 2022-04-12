@@ -6,12 +6,12 @@
 /*   By: afaris <afaris@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 10:28:49 by afaris            #+#    #+#             */
-/*   Updated: 2022/04/08 10:13:20 by afaris           ###   ########.fr       */
+/*   Updated: 2022/04/12 12:21:38 by afaris           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-/*
+
 void	first_execution(t_var *v, int **fd, int infile)
 {
 	dup2(infile, 0);
@@ -67,7 +67,7 @@ int	main(int ac, char **av, char **env)
 	t_args	args;
 	int		**fd;
 	int		i;
-	
+
 	i = 2;
 	fd = allocate_fds(ac - 4);
 	if (ac != 5)
@@ -81,6 +81,4 @@ int	main(int ac, char **av, char **env)
 	}
 	close_free_fds(fd, ac - 4);
 	free_2d_array(args.env_paths);
-	system("leaks pipex");
 }
-*/
